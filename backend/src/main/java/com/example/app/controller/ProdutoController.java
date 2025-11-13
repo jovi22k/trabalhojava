@@ -2,17 +2,16 @@ package com.example.app.controller;
 
 import com.example.app.model.Produto;
 import com.example.app.repository.ProdutoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/produtos")
-@CrossOrigin(origins = "*") // ajuste para restringir ao domínio do seu GitHub Pages se preferir
+@CrossOrigin(origins = "*")
 public class ProdutoController {
 
     private final ProdutoRepository repository;
@@ -22,43 +21,52 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public List<Produto> listar() {
-        return repository.findAll();
+    public ResponseEntity<List<Produto>> listar() {
+        return ResponseEntity.ok(repository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> obter(@PathVariable Long id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         return repository.findById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Produto não encontrado"));
     }
 
     @PostMapping
-    public ResponseEntity<Produto> criar(@Valid @RequestBody Produto produto) {
+    public ResponseEntity<?> criar(@RequestBody Produto produto) {
         Produto salvo = repository.save(produto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(salvo.getId())
-                .toUri();
-        return ResponseEntity.created(uri).body(salvo);
+        return ResponseEntity
+                .created(URI.create("/api/v1/produtos/" + salvo.getId()))
+                .body(salvo);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
+    public ResponseEntity<?> atualizar(
+            @PathVariable Long id,
+            @RequestBody Produto atualizacao) {
+
         return repository.findById(id)
-                .map(existente -> {
-                    existente.setNome(produto.getNome());
-                    existente.setPreco(produto.getPreco());
-                    return ResponseEntity.ok(repository.save(existente));
+                .map(produto -> {
+                    produto.setNome(atualizacao.getNome());
+                    produto.setPreco(atualizacao.getPreco());
+                    produto.setDescricao(atualizacao.getDescricao());
+                    Produto salvo = repository.save(produto);
+                    return ResponseEntity.ok(salvo);
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Produto não encontrado"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable Long id) {
-        return repository.findById(id).map(p -> {
-            repository.delete(p);
-            return ResponseEntity.noContent().build();
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        if (!repository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Produto não encontrado");
+        }
+        repository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
