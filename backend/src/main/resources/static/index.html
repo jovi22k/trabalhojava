@@ -5,22 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cliente - Produtos</title>
     <style>
-      body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width:900px; margin:2rem auto; padding:0 1rem;}
-      header{display:flex; align-items:center; justify-content:space-between;}
-      .card{border:1px solid #ddd; border-radius:12px; padding:1rem; margin:1rem 0; box-shadow:0 1px 2px rgba(0,0,0,0.04);}
-      input, button{padding:.6rem .8rem; border-radius:10px; border:1px solid #ccc; outline:none;}
-      button{cursor:pointer;}
-      table{width:100%; border-collapse:collapse;}
-      th, td{padding:.6rem; border-bottom:1px solid #eee; text-align:left;}
-      .row{display:flex; gap:.5rem; flex-wrap:wrap;}
-      .muted{color:#777; font-size:.9rem;}
-      .danger{color:#b00020; cursor:pointer;}
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        background: #f4f6f8;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      header h1 {
+        margin: 0;
+      }
+
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 1rem 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        background: #fff;
+      }
+
+      input, button {
+        padding: .6rem .8rem;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+        font-size: .95rem;
+      }
+
+      button {
+        cursor: pointer;
+        background: #1976d2;
+        color: #fff;
+        border: none;
+      }
+
+      button:hover {
+        background: #145ca3;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        padding: .6rem;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+
+      .row {
+        display: flex;
+        gap: .5rem;
+        flex-wrap: wrap;
+        margin-top: .5rem;
+      }
+
+      .muted {
+        color: #777;
+        font-size: .9rem;
+      }
+
+      .danger {
+        color: #b00020;
+        cursor: pointer;
+        margin-left: .5rem;
+      }
+
+      .status {
+        font-size: .85rem;
+        margin-top: .5rem;
+      }
+
+      .status.ok {
+        color: #2e7d32;
+      }
+
+      .status.error {
+        color: #b00020;
+      }
     </style>
   </head>
   <body>
     <header>
-      <h1>Produtos</h1>
-      <div class="muted">Consumindo API Java (Spring Boot)</div>
+      <div>
+        <h1>Produtos</h1>
+        <div class="muted">Cliente consumindo API Java (Spring Boot + PostgreSQL)</div>
+      </div>
+      <div id="statusApi" class="status muted">Verificando status da API...</div>
     </header>
 
     <section class="card">
@@ -30,18 +111,29 @@
         <input id="preco" placeholder="Preço (ex: 19.90)" type="number" step="0.01" />
         <button onclick="criar()">Adicionar</button>
       </div>
-      <p class="muted">Defina a URL da API no arquivo <code>api.js</code>.</p>
+      <p class="muted">
+        Esta tela usa a API pública em <code>/api/v1/produtos</code>.
+      </p>
     </section>
 
     <section class="card">
-      <h3>Lista</h3>
+      <h3>Lista de produtos</h3>
       <table>
-        <thead><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Ações</th></tr></thead>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
         <tbody id="tbody"></tbody>
       </table>
+      <p class="muted" id="listaVazia" style="display:none;">
+        Nenhum produto cadastrado ainda.
+      </p>
     </section>
 
-    <script src="./api.js"></script>
+    <script src="/api.js"></script>
   </body>
 </html>
-
