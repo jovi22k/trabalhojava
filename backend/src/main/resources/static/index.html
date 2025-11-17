@@ -1,1 +1,47 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cliente - Produtos</title>
+    <style>
+      body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width:900px; margin:2rem auto; padding:0 1rem;}
+      header{display:flex; align-items:center; justify-content:space-between;}
+      .card{border:1px solid #ddd; border-radius:12px; padding:1rem; margin:1rem 0; box-shadow:0 1px 2px rgba(0,0,0,0.04);}
+      input, button{padding:.6rem .8rem; border-radius:10px; border:1px solid #ccc; outline:none;}
+      button{cursor:pointer;}
+      table{width:100%; border-collapse:collapse;}
+      th, td{padding:.6rem; border-bottom:1px solid #eee; text-align:left;}
+      .row{display:flex; gap:.5rem; flex-wrap:wrap;}
+      .muted{color:#777; font-size:.9rem;}
+      .danger{color:#b00020; cursor:pointer;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Produtos</h1>
+      <div class="muted">Consumindo API Java (Spring Boot)</div>
+    </header>
+
+    <section class="card">
+      <h3>Novo produto</h3>
+      <div class="row">
+        <input id="nome" placeholder="Nome" />
+        <input id="preco" placeholder="Preço (ex: 19.90)" type="number" step="0.01" />
+        <button onclick="criar()">Adicionar</button>
+      </div>
+      <p class="muted">Defina a URL da API no arquivo <code>api.js</code>.</p>
+    </section>
+
+    <section class="card">
+      <h3>Lista</h3>
+      <table>
+        <thead><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+
+    <script src="./api.js"></script>
+  </body>
+</html>
 
